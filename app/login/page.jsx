@@ -2,11 +2,15 @@
 import React from 'react';
 import { useRouter } from 'next/navigation';
 import logIn from '@/firebase/auth/login';
+import { useUserContext } from '@/context/AuthContext';
+
 
 function LoginPage() {
 
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
+
+  const { user } = useUserContext();
 
   const router = useRouter()
 
@@ -14,12 +18,12 @@ function LoginPage() {
     event.preventDefault()
     try {
 
-      // create user
+      // login
       const res1 = await logIn(email, password);
 
-      console.log("result from logIN: ", res1);
+      console.log("result from logIn: ", res1);
 
-      router.push('/');
+      // router.push('/');
       
     } catch (err){
       console.log("error: ", err)
@@ -42,6 +46,7 @@ function LoginPage() {
             <button type="submit">Submit</button>
         </form>
     </div>
+      {/* { user ?  JSON.stringify(user) : "no user" } */}
 </div>
   )
 }
