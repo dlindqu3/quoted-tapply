@@ -7,10 +7,10 @@
 
 
 ## later 
-- add default image for user AT REGISTER 
+- add default user image in Storage  
+- access default image AT REGISTER 
 - store images in firebase's Storage 
 - allow user to update image 
-- allow user to add a username 
 
 
 

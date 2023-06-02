@@ -1,6 +1,8 @@
 'use client';
 import React from "react";
 import signUp from "@/firebase/auth/signup";
+import { auth } from "@/firebase/config";
+import { updateProfile } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 
 
@@ -14,6 +16,7 @@ function RegisterPage() {
 
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
+  const [username, setUsername] = React.useState('')
 
   const router = useRouter()
 
@@ -23,10 +26,21 @@ function RegisterPage() {
 
       // create user
       const res1 = await signUp(email, password);
-
       console.log("result from register: ", res1);
 
-      router.push('/login');
+      // updated created user: add username 
+      console.log("auth.currentUser after register: ");
+      console.log(auth.currentUser);  
+      const res2 = await updateProfile(auth.currentUser, {
+        displayName: username, photoURL: "https://example.com/jane-q-user/profile.jpg"
+      })
+      // console.log("res2: ", res2); ## this is void normally 
+
+      // check new user data 
+      const user = auth.currentUser;
+      console.log("user after username added: ", user); 
+
+      // router.push('/login');
       
     } catch (err){
       console.log("error: ", err)
@@ -41,6 +55,10 @@ function RegisterPage() {
                 <label htmlFor="email">
                     <p>Email: </p>
                     <input onChange={(e) => setEmail(e.target.value)} required type="email" name="email" id="email" placeholder="example@mail.com" />
+                </label>
+                <label htmlFor="username">
+                    <p>Username: </p>
+                    <input onChange={(e) => setUsername(e.target.value)} required type="text" name="username" id="username" placeholder="Jerry55" />
                 </label>
                 <label htmlFor="password">
                     <p>Password:</p>
