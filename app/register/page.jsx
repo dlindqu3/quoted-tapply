@@ -1,9 +1,10 @@
 'use client';
 import React from "react";
 import signUp from "@/firebase/auth/signup";
-import { auth } from "@/firebase/config";
+import { auth, storage } from "@/firebase/config";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from 'next/navigation';
+import {  ref, getDownloadURL } from "firebase/storage";
 
 
 // By default, each page you add in the app directory is a Server component 
@@ -28,17 +29,21 @@ function RegisterPage() {
       const res1 = await signUp(email, password);
       console.log("result from register: ", res1);
 
+      // get default image from firebase storage 
+      let defaultImageURL = await getDownloadURL(ref(storage, 'images/default-profile-image.jpg')); 
+      console.log("defaultImageURL: ", defaultImageURL); 
+
       // updated created user: add username 
       console.log("auth.currentUser after register: ");
       console.log(auth.currentUser);  
       const res2 = await updateProfile(auth.currentUser, {
-        displayName: username, photoURL: "https://example.com/jane-q-user/profile.jpg"
+        displayName: username, photoURL: defaultImageURL
       })
       // console.log("res2: ", res2); ## this is void normally 
 
       // check new user data 
       const user = auth.currentUser;
-      console.log("user after username added: ", user); 
+      console.log("user after username and default image url added: ", user); 
 
       // router.push('/login');
       
