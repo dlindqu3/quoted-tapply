@@ -10,7 +10,7 @@ function LoginPage() {
   const [email, setEmail] = React.useState('')
   const [password, setPassword] = React.useState('')
 
-  const { user } = useUserContext();
+  const { user, setUser } = useUserContext();
 
   const router = useRouter()
 
@@ -22,8 +22,10 @@ function LoginPage() {
       const res1 = await logIn(email, password);
 
       console.log("result from logIn: ", res1);
-
-      // router.push('/');
+      if (!res1.error){
+        setUser(res1.result)
+        router.push('/profile');
+      }
       
     } catch (err){
       console.log("error: ", err)
@@ -33,7 +35,7 @@ function LoginPage() {
   return (
     <div className="wrapper">
     <div className="form-wrapper">
-        <h1 className="mt-60 mb-30">Login</h1>
+        <h1 className="">Login</h1>
         <form onSubmit={handleForm} className="form">
             <label htmlFor="email">
                 <p>Email: </p>

@@ -9,8 +9,8 @@ function Header() {
 
   return (
     <div>
-    <div>Header: </div>
-    { user && <p>{user.displayName}</p> } 
+    <div>Header here</div>
+    {/* { user && <p>{user.displayName}</p> }  */}
     </div>
 
   )
