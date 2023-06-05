@@ -69,7 +69,8 @@ function ProfilePage() {
 
       if (newUserQuote){
         console.log("quote is new"); 
-        const userObjRef = db.collection('users').doc(user.user.uid);    
+        const userObjRef = doc(db, "users", user.user.uid);
+        // console.log("userObjRef: ", userObjRef);     
         const res = await updateDoc(userObjRef, {
           favoriteQuote: newUserQuote
         })

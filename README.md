@@ -19,8 +19,17 @@
 - create/add to users collection on register DONE 
 - profile page: update username/email DONE 
 - profile page: update photoURL DONE 
-- profile page: update favoriteQuote
+- profile page: update favoriteQuote DONE 
 
+
+## questions
+- can I store user data in localStorage for mobile? 
+
+
+## problem/solution example
+- updating collection documents
+- old/faulty docs: [link](https://cloud.google.com/firestore/docs/samples/firestore-data-set-field)
+- new/working docs: [link](https://firebase.google.com/docs/firestore/manage-data/add-data#update-data)
 
 
 ## citations 
