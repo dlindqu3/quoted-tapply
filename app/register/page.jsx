@@ -6,7 +6,7 @@ import { updateProfile } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import {  ref, getDownloadURL } from "firebase/storage";
 import { db } from "@/firebase/config";
-import { collection, addDoc, serverTimestamp } from "firebase/firestore";
+import { doc, setDoc, serverTimestamp } from "firebase/firestore";
 
 // By default, each page you add in the app directory is a Server component 
 // which means we cannot add client-side interactivity like adding an onSubmit() 
@@ -26,19 +26,21 @@ function RegisterPage() {
     event.preventDefault()
     try {
 
+      // NOTE: 
+      // the uid associated with an auth user is not the same as the id associated with a user collection object
+
       // create user (auth)
       const res1 = await signUp(email, password);
       console.log("result from register: ", res1);
+      console.log("auth uid from register: ", res1.result.user.uid);
 
       // create/add to user collection
-      const res2 = await addDoc(collection(db, "users"), {
-        username: username, 
-        email: email, 
-        password: password,
+      const res2 = await setDoc(doc(db, "users", res1.result.user.uid), {
+        favoriteQuote: "",
         timestamp: serverTimestamp()
       }); 
-      console.log("res2 from user collection/creation: ", res2);
-      console.log("res2.id from user collection/creation: ", res2.id);
+      // console.log("res2 from user collection/creation: ", res2); // null if successful 
+      // console.log("res2.id from user collection/creation: ", res2.uid);
 
       // get default image from firebase storage 
       let defaultImageURL = await getDownloadURL(ref(storage, 'images/default-profile-image.jpg')); 
