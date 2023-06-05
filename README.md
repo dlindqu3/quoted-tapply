@@ -20,10 +20,8 @@
 - profile page: update username/email DONE 
 - profile page: update photoURL DONE 
 - profile page: update favoriteQuote DONE 
-
-
-## questions
-- can I store user data in localStorage for mobile? 
+- header: logout button DONE 
+- header: routes DONE 
 
 
 ## problem/solution example

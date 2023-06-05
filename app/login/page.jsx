@@ -24,7 +24,8 @@ function LoginPage() {
       console.log("result from logIn: ", res1);
       if (!res1.error){
         setUser(res1.result)
-        router.push('/profile');
+        localStorage.setItem( "quoted-user", JSON.stringify(res1.result));
+        router.push('/');
       }
       
     } catch (err){

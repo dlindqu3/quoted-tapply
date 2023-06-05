@@ -20,7 +20,7 @@ function RegisterPage() {
   const [password, setPassword] = React.useState('')
   const [username, setUsername] = React.useState('')
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleForm = async (event) => {
     event.preventDefault()
