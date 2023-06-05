@@ -5,7 +5,8 @@ import { auth, storage } from "@/firebase/config";
 import { updateProfile } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import {  ref, getDownloadURL } from "firebase/storage";
-
+import { db } from "@/firebase/config";
+import { collection, addDoc, serverTimestamp } from "firebase/firestore";
 
 // By default, each page you add in the app directory is a Server component 
 // which means we cannot add client-side interactivity like adding an onSubmit() 
@@ -25,27 +26,37 @@ function RegisterPage() {
     event.preventDefault()
     try {
 
-      // create user
+      // create user (auth)
       const res1 = await signUp(email, password);
       console.log("result from register: ", res1);
+
+      // create/add to user collection
+      const res2 = await addDoc(collection(db, "users"), {
+        username: username, 
+        email: email, 
+        password: password,
+        timestamp: serverTimestamp()
+      }); 
+      console.log("res2 from user collection/creation: ", res2);
+      console.log("res2.id from user collection/creation: ", res2.id);
 
       // get default image from firebase storage 
       let defaultImageURL = await getDownloadURL(ref(storage, 'images/default-profile-image.jpg')); 
       console.log("defaultImageURL: ", defaultImageURL); 
 
-      // updated created user: add username 
+      // updated created user: add username, photoURL 
       console.log("auth.currentUser after register: ");
       console.log(auth.currentUser);  
-      const res2 = await updateProfile(auth.currentUser, {
+      const res3 = await updateProfile(auth.currentUser, {
         displayName: username, photoURL: defaultImageURL
       })
-      // console.log("res2: ", res2); ## this is void normally 
+      // console.log("res3: ", res3); ## this is void normally 
 
-      // check new user data 
+      // check new user data in auth 
       const user = auth.currentUser;
-      console.log("user after username and default image url added: ", user); 
+      console.log("user in auth after username and default image url added: ", user); 
 
-      // router.push('/login');
+      router.push('/login');
       
     } catch (err){
       console.log("error: ", err)

@@ -6,6 +6,12 @@ import { useUserContext } from '@/context/AuthContext';
 function ProfilePage() {
 
     const { user, setUser } = useUserContext();
+
+    // add method to add photo 
+
+    // add method to do all other profile/user updates together 
+
+
   return (
     <div>
         <p>Profile page here</p>

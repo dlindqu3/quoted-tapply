@@ -16,6 +16,7 @@
 - set global user context on login DONE 
 - create default profile page DONE 
 - responsive size for profile page image DONE   
+- create/add to users collection on register 
 
 
 ## citations 
