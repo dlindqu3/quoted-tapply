@@ -23,6 +23,8 @@
 - header: logout button DONE 
 - header: routes DONE 
 - update profile data on form submit DONE
+- create quotes DONE 
+- read all quotes and display data 
 
 
 ## problem/solution example
@@ -36,6 +38,13 @@
 - solution: use setState() directly, like with setUserQuote in app/profile/page.js
 
 
+## problem 
+- getDocs returns a snapshot with a .docs property 
+- I can iterate over this .docs array and call .docs[i].data() to see the object 
+- however, this object does not include an id
+- solution: { ...currentDoc.data(), id: currentDoc.id };
+
+
 ## citations 
 1. Smoljames, "Learn Next.js by building a full-stack CRUD app | Nextjs + Firebase (Auth & Firestore) + TailwindCSS" [link](https://www.youtube.com/watch?v=UzMr7-0FgA0)
 2. developedbyed, "Next.js 13 Crash Course | Learn How To Build Full Stack Apps!" [link](https://www.youtube.com/watch?v=T63nY70eZF0)
@@ -45,3 +54,4 @@
 6. The Net Ninja, "Firebase Auth Tutorial #15- Firestore Users Collection" [link](https://www.youtube.com/watch?v=qWy9ylc3f9U)
 7. Lama Dev, "React Firebase Tutorial | AUTH - CRUD - Image Upload" [link](https://www.youtube.com/watch?v=D9W7AFeJ3kk)
 8. PedroTech, "Upload Images / Files to Firebase In React - Firebase V9 File Upload Tutorial" [link](https://www.youtube.com/watch?v=YOAeBSCkArA)
+9. Stack Overflow, "Is there a way to use the orderBy() function from firestore using getDocs?" [link](https://stackoverflow.com/questions/70553624/is-there-a-way-to-use-the-orderby-function-from-firestore-using-getdocs)

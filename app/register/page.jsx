@@ -27,36 +27,29 @@ function RegisterPage() {
     try {
 
       // NOTE: 
-      // the uid associated with an auth user is not the same as the id associated with a user collection object
+      // by default, the uid associated with an auth user is not the same as the id associated with a user collection object
 
       // create user (auth)
       const res1 = await signUp(email, password);
-      console.log("result from register: ", res1);
-      console.log("auth uid from register: ", res1.result.user.uid);
+
+      // update user (auth)
+      let defaultImageURL = await getDownloadURL(ref(storage, 'images/default-profile-image.jpg')); 
+      const res3 = await updateProfile(auth.currentUser, {
+        displayName: username, photoURL: defaultImageURL
+      })
 
       // create/add to user collection
       const res2 = await setDoc(doc(db, "users", res1.result.user.uid), {
         favoriteQuote: "",
+        userId: res1.result.user.uid,
+        photoURL: defaultImageURL,
+        username: username,
         timestamp: serverTimestamp()
       }); 
-      // console.log("res2 from user collection/creation: ", res2); // null if successful 
-      // console.log("res2.id from user collection/creation: ", res2.uid);
-
-      // get default image from firebase storage 
-      let defaultImageURL = await getDownloadURL(ref(storage, 'images/default-profile-image.jpg')); 
-      console.log("defaultImageURL: ", defaultImageURL); 
-
-      // updated created user: add username, photoURL 
-      console.log("auth.currentUser after register: ");
-      console.log(auth.currentUser);  
-      const res3 = await updateProfile(auth.currentUser, {
-        displayName: username, photoURL: defaultImageURL
-      })
-      // console.log("res3: ", res3); ## this is void normally 
 
       // check new user data in auth 
       const user = auth.currentUser;
-      console.log("user in auth after username and default image url added: ", user); 
+      console.log("user in auth after collection doc added: ", user); 
 
       router.push('/login');
       
