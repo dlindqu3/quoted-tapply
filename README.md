@@ -22,12 +22,18 @@
 - profile page: update favoriteQuote DONE 
 - header: logout button DONE 
 - header: routes DONE 
+- update profile data on form submit DONE
 
 
 ## problem/solution example
 - updating collection documents
 - old/faulty docs: [link](https://cloud.google.com/firestore/docs/samples/firestore-data-set-field)
 - new/working docs: [link](https://firebase.google.com/docs/firestore/manage-data/add-data#update-data)
+
+
+## problem/solution example
+- page not changing when data changed in database (updateDoc) 
+- solution: use setState() directly, like with setUserQuote in app/profile/page.js
 
 
 ## citations 

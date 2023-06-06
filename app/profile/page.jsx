@@ -15,14 +15,15 @@ function ProfilePage() {
   const [userQuote, setUserQuote] = useState(""); 
   const [newUserQuote, setNewUserQuote] = useState(""); 
   const [newPhoto, setNewPhoto] = useState(null); 
+  const [loading, setLoading] = useState(false); 
 
-    // HERE: get user's fav quote from collection, add in state, display
+    // HERE: get user's favorite quote from collection, add in state, display
     useEffect(() => {
       let getUserDoc = async () => {
-        const docRef = doc(db, "users", user.user.uid);
+        const docRef = doc(db, "users", user.uid);
         const docSnap = await getDoc(docRef);
         if (docSnap.exists()) {
-          console.log("Document data:", docSnap.data());
+          // console.log("Document data:", docSnap.data());
           let existingQuote = docSnap.data()["favoriteQuote"]; 
           // console.log("existingQuote: ", existingQuote); 
           setUserQuote(existingQuote);
@@ -37,6 +38,7 @@ function ProfilePage() {
     let handleForm = async (e) => {
       e.preventDefault(); 
       console.log("handleForm called"); 
+      setLoading(true); 
       if (newPhoto){
         // add new image to storage 
         let imageName = newPhoto.name; 
@@ -69,32 +71,35 @@ function ProfilePage() {
 
       if (newUserQuote){
         console.log("quote is new"); 
-        const userObjRef = doc(db, "users", user.user.uid);
+        const userObjRef = doc(db, "users", user.uid);
         // console.log("userObjRef: ", userObjRef);     
         const res = await updateDoc(userObjRef, {
           favoriteQuote: newUserQuote
         })
+        console.log("res from update quote: ", res);
+        if (!res){
+          setUserQuote(newUserQuote); 
+        }
       } 
+      setLoading(false); 
     }
 
 
   return (
     <div>
         <h4>Profile Data</h4>
-        { console.log("user from ProfilePage: ", user) }
-        {/* { console.log("user.user from ProfilePage: ", user.user)} */}
         <div>Username:</div>
-        <p>{user.user.displayName}</p>
+        <p>{ user.displayName }</p>
         <div>Email:</div>
-        <p>{user.user.email}</p>
+        <p>{ user.email }</p>
         <button onClick={() => {openUserDialog()}}>Update User Info</button>
         <br /> 
         <div>Favorite quote: </div>
-        { userQuote.length > 0 ? <p>{userQuote}</p> : <p>None</p> }
+        { userQuote.length > 0 ? <p>{ userQuote }</p> : <p>None</p> }
         <div className="w-1/6 relative bg-slate-300">
           <img 
             className="w-full h-full object-cover" 
-            src={user.user.photoURL} 
+            src={ user.photoURL } 
             alt="profile image"
           />
         </div>
@@ -123,6 +128,7 @@ function ProfilePage() {
         </form>
 
         <br /> 
+        { loading && <p>Loading...</p> }
         <br />
 
         { newUsername && <p>new username: {newUsername}</p> }

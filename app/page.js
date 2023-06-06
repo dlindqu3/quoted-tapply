@@ -29,6 +29,7 @@ export default function Home() {
     <main className="">
       <p>Homepage Here</p>
       <p>Add directions to signup or login to view quotes</p>
+      <p>Add screenshots of profile, quotes pages</p>
       {/* { user && <p>user: { user.displayName }</p> } */}
     </main>
   )
