@@ -20,6 +20,14 @@ function Header() {
     });
   }
 
+  let handleRegister = () => {
+    router.push('/register');
+  }
+
+  let handleLogin = () => {
+    router.push('/login');
+  }
+
   let handleProfile = () => {
     router.push('/profile');
   }
@@ -31,6 +39,8 @@ function Header() {
   return (
     <div>
     <div>Header here</div>
+    { !user && <button onClick={handleRegister}>Register</button> }
+    { !user && <button onClick={handleLogin}>Login</button> }
     { user && <p>{user.displayName}</p> } 
     { user && <button onClick={handleProfile}>Profile</button> }
     { user && <button onClick={handleQuotes}>Quotes</button> }

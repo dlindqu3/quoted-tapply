@@ -7,7 +7,7 @@
 
 
 ## sample user
-- email: aaa@gmail.com
+- email: batman@gmail.com
 - pass: Green@55
 
 
@@ -24,7 +24,8 @@
 - header: routes DONE 
 - update profile data on form submit DONE
 - create quotes DONE 
-- read all quotes and display data 
+- read all quotes DONE 
+- protected routes (profile, quotes) DONE 
 
 
 ## problem/solution example
@@ -38,7 +39,7 @@
 - solution: use setState() directly, like with setUserQuote in app/profile/page.js
 
 
-## problem 
+## problem/solution example
 - getDocs returns a snapshot with a .docs property 
 - I can iterate over this .docs array and call .docs[i].data() to see the object 
 - however, this object does not include an id

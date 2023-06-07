@@ -12,7 +12,7 @@ function LoginPage() {
 
   const { user, setUser } = useUserContext();
 
-  const router = useRouter()
+  const router = useRouter();
 
   const handleForm = async (event) => {
     event.preventDefault()

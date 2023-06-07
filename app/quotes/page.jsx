@@ -3,11 +3,12 @@ import React, { useState, useEffect } from 'react';
 import { useUserContext } from '@/context/AuthContext'
 import { db } from "@/firebase/config";
 import { collection, getDocs, where, getDoc, query, orderBy, addDoc, serverTimestamp } from "firebase/firestore"; 
-
+import { useRouter } from 'next/navigation';
 
 function QuotesPage() {
 
   const { user, setUser } = useUserContext();
+  const router = useRouter();
 
   let getAllQuotes = async () => {
     console.log("getAllQuotes called"); 
@@ -50,12 +51,14 @@ function QuotesPage() {
 
   useEffect(() => {
     //Runs only on the first render
-    console.log("useEffect from quotes page called"); 
-
-    getAllQuotes(); 
+    if (user == null) {
+      router.push("/login");
+    } else {
+      getAllQuotes(); 
+    }
   }, []);
 
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(true); 
   const [speaker, setSpeaker] = useState(""); 
   const [quoteBody, setQuoteBody] = useState(""); 
   const [quotes, setQuotes] = useState([]); 
@@ -77,7 +80,9 @@ function QuotesPage() {
       });     
     } 
 
-
+  if (loading){
+    return <p>Loading...</p>
+  } 
 
   return (
     <div>

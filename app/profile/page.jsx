@@ -1,21 +1,25 @@
 'use client';
 import React, { useState, useEffect } from 'react';
 import { useUserContext } from '@/context/AuthContext';
+import { useRouter } from 'next/navigation';
 import { doc, getDoc, updateDoc } from "firebase/firestore";
 import { db, collection, storage, auth } from '@/firebase/config';
 import { getAuth, updateProfile } from "firebase/auth";
 import { ref, uploadBytes, getDownloadURL } from 'firebase/storage';
 import { v4 } from 'uuid';
 
+
 function ProfilePage() {
 
   const { user, setUser } = useUserContext();
+  const router = useRouter();
+
   const [newUsername, setNewUsername] = useState(""); 
   const [newEmail, setNewEmail] = useState(""); 
   const [userQuote, setUserQuote] = useState(""); 
   const [newUserQuote, setNewUserQuote] = useState(""); 
   const [newPhoto, setNewPhoto] = useState(null); 
-  const [loading, setLoading] = useState(false); 
+  const [loading, setLoading] = useState(true); 
 
     // HERE: get user's favorite quote from collection, add in state, display
     useEffect(() => {
@@ -32,7 +36,11 @@ function ProfilePage() {
         console.log("No such document!");
         }
       }
-      getUserDoc();
+      if (user == null) {
+        router.push("/login");
+      } else {
+        getUserDoc();
+      }
     }, []);
 
     let handleForm = async (e) => {
@@ -84,14 +92,18 @@ function ProfilePage() {
       setLoading(false); 
     }
 
+  
+  if (loading){
+    return <p>Loading...</p>
+  } 
 
   return (
     <div>
         <h4>Profile Data</h4>
         <div>Username:</div>
-        <p>{ user.displayName }</p>
+        <p>{ user && user.displayName }</p>
         <div>Email:</div>
-        <p>{ user.email }</p>
+        <p>{ user && user.email }</p>
         <button onClick={() => {openUserDialog()}}>Update User Info</button>
         <br /> 
         <div>Favorite quote: </div>
@@ -99,7 +111,7 @@ function ProfilePage() {
         <div className="w-1/6 relative bg-slate-300">
           <img 
             className="w-full h-full object-cover" 
-            src={ user.photoURL } 
+            src={ user && user.photoURL } 
             alt="profile image"
           />
         </div>
