@@ -21,11 +21,10 @@ function LoginPage() {
       // login
       const res1 = await logIn(email, password);
 
-      console.log("result from logIn: ", res1);
+      // console.log("result from logIn: ", res1);
       if (!res1.error){
-        console.log("user from login: ", res1.result.user); 
+        // console.log("user from login: ", res1.result.user); 
         setUser(res1.result.user);
-        localStorage.setItem( "quoted-user", JSON.stringify(res1.result));
         router.push('/');
       }
       

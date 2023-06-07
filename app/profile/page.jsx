@@ -28,6 +28,10 @@ function ProfilePage() {
   const [newPhoto, setNewPhoto] = useState(null);
   const [loading, setLoading] = useState(true);
   const [postedQuotes, setPostedQuotes] = useState([]);
+  const [idForUpdate, setIdForUpdate] = useState(null); 
+  const [newSpeaker, setNewSpeaker] = useState(null); 
+  const [newBody, setNewBody] = useState(null); 
+
 
   let getPostedQuotes = async () => {
     let userId = "/users/" + user.uid;
@@ -41,7 +45,7 @@ function ProfilePage() {
       let obj = { ...current.data(), id: current.id };
       postedQuotes.push(obj);
     }
-    console.log("user's posted quotes: ", postedQuotes);
+    // console.log("user's posted quotes: ", postedQuotes);
     setPostedQuotes(postedQuotes);
   };
 
@@ -53,10 +57,7 @@ function ProfilePage() {
       let existingQuote = docSnap.data()["favoriteQuote"];
       // console.log("existingQuote: ", existingQuote);
       setUserQuote(existingQuote);
-    } else {
-      // docSnap.data() will be undefined in this case
-      console.log("No such document!");
-    }
+    } 
   };
 
   // HERE: get user's favorite quote from collection, add in state, display
@@ -72,7 +73,7 @@ function ProfilePage() {
 
   let handleForm = async (e) => {
     e.preventDefault();
-    console.log("handleForm called");
+    // console.log("handleForm called");
     setLoading(true);
     if (newPhoto) {
       // add new image to storage
@@ -80,12 +81,12 @@ function ProfilePage() {
       let randomizedName = `${imageName + v4()}`;
       const imageRef = ref(storage, `images/${randomizedName}`);
       let uploadedData = await uploadBytes(imageRef, newPhoto);
-      console.log("uploaded image data: ", uploadedData);
+      // console.log("uploaded image data: ", uploadedData);
       // add new image's url as user's photoURL
       let newPhotoURL = await getDownloadURL(
         ref(storage, uploadedData.ref._location.path_)
       );
-      console.log("new photoURL: ", newPhotoURL);
+      // console.log("new photoURL: ", newPhotoURL);
       // update user in auth
       const res = await updateProfile(auth.currentUser, {
         photoURL: newPhotoURL,
@@ -93,27 +94,27 @@ function ProfilePage() {
     }
 
     if (newEmail) {
-      console.log("email is new");
+      // console.log("email is new");
       const res = await updateProfile(auth.currentUser, {
         email: newEmail,
       });
     }
 
     if (newUsername) {
-      console.log("username is new");
+      // console.log("username is new");
       const res = await updateProfile(auth.currentUser, {
         displayName: newUsername,
       });
     }
 
     if (newUserQuote) {
-      console.log("quote is new");
+      // console.log("quote is new");
       const userObjRef = doc(db, "users", user.uid);
       // console.log("userObjRef: ", userObjRef);
       const res = await updateDoc(userObjRef, {
         favoriteQuote: newUserQuote,
       });
-      console.log("res from update quote: ", res);
+      // console.log("res from update quote: ", res);
       if (!res) {
         setUserQuote(newUserQuote);
       }
@@ -125,7 +126,7 @@ function ProfilePage() {
   let handleDeleteQuote = async (id) => {
     try {
       let deleted = await deleteDoc(doc(db, "quotes", id));
-      console.log("quote deleted"); 
+      // console.log("quote deleted"); 
       getPostedQuotes(); 
     } catch (err){
       console.log("error from delete: ", err); 
@@ -133,8 +134,47 @@ function ProfilePage() {
   }
 
   // takes a quote id as arg   
-  let handleUpdateQuote = (id) => {}
+  let handleUpdateQuote = (id) => {
+    const dialog = document.getElementById("dialog");
+    dialog.showModal();
+    // console.log("handleUpdateQuote called"); 
+    // console.log("id passed to update: ", id); 
+    setIdForUpdate(id); 
+  }
 
+  let handleDialogSubmit = async (e) => {
+    e.preventDefault(); 
+    // console.log("handleDialogSubmit called"); 
+    // console.log("newBody: ", newBody);
+    // console.log("newSpeaker: ", newSpeaker); 
+    // console.log("id from dialog: ", idForUpdate); 
+
+    // update current item in db
+    const quoteRef = doc(db, "quotes", idForUpdate);
+    // console.log("quoteRef from update: ", quoteRef); 
+
+    if (newBody && newSpeaker){
+      await updateDoc(quoteRef, {
+        quoteBody: newBody,
+        speaker: newSpeaker
+      });
+    } else if (newBody){
+      await updateDoc(quoteRef, {
+        quoteBody: newBody
+      });
+    } else if (newSpeaker){
+      await updateDoc(quoteRef, {
+        speaker: newSpeaker
+      });
+    }
+
+    // update postedQuotes state 
+    getPostedQuotes(); 
+
+    setIdForUpdate(null);
+    const dialog = document.getElementById("dialog");
+    dialog.close();
+  }
 
   if (loading) {
     return <p>Loading...</p>;
@@ -249,6 +289,27 @@ function ProfilePage() {
         {newUserQuote && <p>new quote: {newUserQuote}</p>}
         {newPhoto && <p>new photo url: {JSON.stringify(newPhoto)}</p>}
       </div>
+      
+      <dialog id="dialog">
+        <p>AAAAGGSFGSFG</p>
+        <form onSubmit={handleDialogSubmit} className="form">
+            <label htmlFor="newSpeaker">
+                <p>Update speaker: </p>
+                <input onChange={(e) => setNewSpeaker(e.target.value)} type="text" name="newSpeaker" id="newSpeaker" placeholder="Monty Python" />
+            </label>
+            <label htmlFor="newBody">
+                <p>Update quote: </p>
+                <input onChange={(e) => setNewBody(e.target.value)} type="text" name="newBody" id="newBody" placeholder="We are the knights who say 'Ni'" />
+            </label>
+            <button type="submit">Submit</button>
+        </form>
+        <button onClick={() => {
+          // console.log("id from dialog: ", idForUpdate); 
+          setIdForUpdate(null); 
+          const dialog = document.getElementById("dialog");
+          dialog.close();
+        }}>Cancel</button>
+      </dialog>
     </div>
   );
 }

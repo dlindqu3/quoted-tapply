@@ -28,8 +28,8 @@
 - protected routes (profile, quotes) DONE 
 - display user's quotes on profile DONE 
 - delete user's quotes on profile DONE 
-- update user's quotes on profile 
-
+- update user's quotes on profile DONE 
+- fix profile image on quotes page 
 
 ## problem/solution example
 - updating collection documents

@@ -11,7 +11,7 @@ function QuotesPage() {
   const router = useRouter();
 
   let getAllQuotes = async () => {
-    console.log("getAllQuotes called"); 
+    // console.log("getAllQuotes called"); 
     let quotesList = [];
     try {
       const docRef = collection(db, 'quotes');    
@@ -20,7 +20,7 @@ function QuotesPage() {
       for (let i = 0; i < quotesSnapshot.docs.length; i++){
         let currentDoc = quotesSnapshot.docs[i]; 
         let newObj = { ...currentDoc.data(), id: currentDoc.id };
-        console.log("new obj: ", newObj); 
+        // console.log("new obj: ", newObj); 
         quotesList.push(newObj); 
       }       
 
@@ -30,20 +30,20 @@ function QuotesPage() {
         let current = quotesList[i]; 
         let currentUser = current.userId;
         let userId = currentUser.split("/")[2]; 
-        console.log("userId: ", userId); 
+        // console.log("userId: ", userId); 
 
         // get user info for each quotesList obj
         const docRef = collection(db, 'users');    
         let userSnapshot = await getDocs(query(docRef, where("userId", "==", userId)));
         let userData = userSnapshot.docs[0].data(); 
-        console.log("userData: ", userData); 
+        // console.log("userData: ", userData); 
         //append username, image url to existing quotesList obj
         current["username"] = userData["username"]; 
         current["photoURL"] = userData["photoURL"]; 
       }
 
       setQuotes(quotesList);  
-      console.log("new quotes list: ", quotesList)
+      // console.log("new quotes list: ", quotesList);
     } catch (err) {
       console.log("error: ", err); 
     }
@@ -66,10 +66,10 @@ function QuotesPage() {
 
   let handleFormSubmit = async (e) => {
     e.preventDefault(); 
-      console.log("create quote called"); 
-      console.log("speaker: ", speaker); 
-      console.log("quoteBody: ", quoteBody); 
-      console.log("user uid: ", user.uid); 
+      // console.log("create quote called"); 
+      // console.log("speaker: ", speaker); 
+      // console.log("quoteBody: ", quoteBody); 
+      // console.log("user uid: ", user.uid); 
     
       // user collection object: user (ref users collection), speaker, quoteBody, createAt
       // Add a new document with a generated id.

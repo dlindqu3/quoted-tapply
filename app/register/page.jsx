@@ -49,7 +49,7 @@ function RegisterPage() {
 
       // check new user data in auth 
       const user = auth.currentUser;
-      console.log("user in auth after collection doc added: ", user); 
+      // console.log("user in auth after collection doc added: ", user); 
 
       router.push('/login');
       

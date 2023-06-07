@@ -11,9 +11,9 @@ function Header() {
   const router = useRouter(); 
 
   let handleLogout = async () => {
-    console.log("handleLogout called"); 
+    // console.log("handleLogout called"); 
     signOut(auth).then(() => {
-      console.log("signed out"); 
+      // console.log("signed out"); 
       router.push('/login');
     }).catch((error) => {
       console.log("error signing out: ", error); 
