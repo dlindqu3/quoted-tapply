@@ -55,6 +55,7 @@ function QuotesPage() {
       router.push("/login");
     } else {
       getAllQuotes(); 
+      setLoading(false); 
     }
   }, []);
 
@@ -78,6 +79,7 @@ function QuotesPage() {
         userId: "/users/" + user.uid,
         createdAt: serverTimestamp()
       });     
+      const newQuotes = await getAllQuotes(); 
     } 
 
   if (loading){

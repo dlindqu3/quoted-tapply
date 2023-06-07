@@ -26,6 +26,9 @@
 - create quotes DONE 
 - read all quotes DONE 
 - protected routes (profile, quotes) DONE 
+- display user's quotes on profile DONE 
+- delete user's quotes on profile DONE 
+- update user's quotes on profile 
 
 
 ## problem/solution example
