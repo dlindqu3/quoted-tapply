@@ -33,6 +33,7 @@
 - fix reroutes on quotes, profile DONE 
 - add CSS DONE 
 
+
 ## questions
 1. Is there a better way to handle the protected routes given user/auth context than my method? How? 
 
