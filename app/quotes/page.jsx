@@ -163,7 +163,7 @@ function QuotesPage() {
                 </div>
                 <div style={{ marginTop: "1vh" }}>
                   <p>Speaker: {obj.speaker}</p>
-                  <p style={{ display: "flex", flexWrap: "wrap" }}>Quote: "{obj.quoteBody}"</p>
+                  <p style={{ display: "flex", flexWrap: "wrap" }}>Quote: {obj.quoteBody}</p>
                   <p>Posted by: {obj.username}</p>
                   <p>Created at: {obj.createdAt.toDate().toDateString()}</p>
                 </div>
