@@ -30,8 +30,11 @@
 - delete user's quotes on profile DONE 
 - update user's quotes on profile DONE 
 - fix profile image on quotes page DONE 
-- fix reroutes on quotes, profile 
-- add CSS 
+- fix reroutes on quotes, profile DONE 
+- add CSS DONE 
+
+## questions
+1. Is there a better way to handle the protected routes given user/auth context than my method? How? 
 
 
 ## problem/solution example

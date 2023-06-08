@@ -2,7 +2,7 @@
 import React from "react";
 import signUp from "@/firebase/auth/signup";
 import { auth, storage } from "@/firebase/config";
-import { updateProfile } from "firebase/auth";
+import { updateProfile, signOut } from "firebase/auth";
 import { useRouter } from 'next/navigation';
 import {  ref, getDownloadURL } from "firebase/storage";
 import { db } from "@/firebase/config";
@@ -50,6 +50,9 @@ function RegisterPage() {
       // check new user data in auth 
       const user = auth.currentUser;
       // console.log("user in auth after collection doc added: ", user); 
+
+      // clear current auth context
+      let signedOut = await signOut(auth); 
 
       router.push('/login');
       

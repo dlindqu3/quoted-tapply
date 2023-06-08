@@ -23,17 +23,19 @@ function ProfilePage() {
 
   const [newUsername, setNewUsername] = useState("");
   const [newEmail, setNewEmail] = useState("");
-  const [userQuote, setUserQuote] = useState("");
-  const [newUserQuote, setNewUserQuote] = useState("");
-  const [newPhoto, setNewPhoto] = useState(null);
+  const [userQuote, setUserQuote] = useState(null);
+  const [newUserQuote, setNewUserQuote] = useState(null); // FIX 
+  const [newPhoto, setNewPhoto] = useState(null); // FIX 
   const [loading, setLoading] = useState(false);
   const [postedQuotes, setPostedQuotes] = useState([]);
-  const [idForUpdate, setIdForUpdate] = useState(null); 
-  const [newSpeaker, setNewSpeaker] = useState(null); 
-  const [newBody, setNewBody] = useState(null); 
-
+  const [idForUpdate, setIdForUpdate] = useState(null);
+  const [newSpeaker, setNewSpeaker] = useState(null);
+  const [newBody, setNewBody] = useState(null);
 
   let getPostedQuotes = async () => {
+    if (!user){
+      return; 
+    }
     let userId = "/users/" + user.uid;
     const docRef = collection(db, "quotes");
     let postedQuotesSnapshot = await getDocs(
@@ -49,38 +51,30 @@ function ProfilePage() {
   };
 
   let getUserDoc = async () => {
+    if (!user){
+      return; 
+    }
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
       let existingQuote = docSnap.data()["favoriteQuote"];
       setUserQuote(existingQuote);
-    } 
+    }
   };
 
-  // FIX 
+  // FIX
   useEffect(() => {
     setLoading(true);
     getUserDoc();
     getPostedQuotes();
     setLoading(false);
-  }, []);
-
-  // FOR SOME REASON, THIS DOESN'T WORK 
-  // useEffect(() => {
-  //   setLoading(true);
-  //   if (user == null) {
-  //     router.push("/login");
-  //   } else {
-  //     getUserDoc();
-  //     getPostedQuotes();
-  //   }
-  //   setLoading(false);
-  // }, [user]);
+  }, [user]);
 
   let handleForm = async (e) => {
     e.preventDefault();
     setLoading(true);
     try {
+      console.log("handleForm called to update profile data"); 
       if (newPhoto) {
         // add new image to storage
         let imageName = newPhoto.name;
@@ -95,120 +89,114 @@ function ProfilePage() {
         const res = await updateProfile(auth.currentUser, {
           photoURL: newPhotoURL,
         });
-  
+        // update user collection 
         const userObjRef = doc(db, "users", user.uid);
         const res2 = await updateDoc(userObjRef, {
-          photoURL: newPhotoURL
-        })
+          photoURL: newPhotoURL,
+        });
       }
-  
+
       if (newEmail) {
         const res = await updateProfile(auth.currentUser, {
           email: newEmail,
         });
       }
-  
+
       if (newUsername) {
         const res = await updateProfile(auth.currentUser, {
           displayName: newUsername,
         });
       }
-  
-      if (newUserQuote) {
-        const userObjRef = doc(db, "users", user.uid);
-        const res = await updateDoc(userObjRef, {
-          favoriteQuote: newUserQuote,
-        });
-        if (!res) {
-          setUserQuote(newUserQuote);
-        }
-      }
-    } catch (err){
-      console.log(err); 
+    } catch (err) {
+      console.log(err);
     }
     setLoading(false);
   };
 
-  // takes a quote id as arg   
+  // takes a quote id as arg
   let handleDeleteQuote = async (id) => {
     try {
       let deleted = await deleteDoc(doc(db, "quotes", id));
-      getPostedQuotes(); 
-    } catch (err){
-      console.log("error from delete: ", err); 
+      getPostedQuotes();
+    } catch (err) {
+      console.log("error from delete: ", err);
     }
-  }
+  };
 
-  // takes a quote id as arg   
+  // takes a quote id as arg
   let handleUpdateQuote = (id) => {
     const dialog = document.getElementById("dialog");
     dialog.showModal();
-    setIdForUpdate(id); 
-  }
+    setIdForUpdate(id);
+  };
 
   let handleDialogSubmit = async (e) => {
-    e.preventDefault(); 
+    e.preventDefault();
     // update current item in db
     const quoteRef = doc(db, "quotes", idForUpdate);
- 
-    if (newBody && newSpeaker){
+
+    if (newBody && newSpeaker) {
       await updateDoc(quoteRef, {
         quoteBody: newBody,
-        speaker: newSpeaker
+        speaker: newSpeaker,
       });
-    } else if (newBody){
+    } else if (newBody) {
       await updateDoc(quoteRef, {
-        quoteBody: newBody
+        quoteBody: newBody,
       });
-    } else if (newSpeaker){
+    } else if (newSpeaker) {
       await updateDoc(quoteRef, {
-        speaker: newSpeaker
+        speaker: newSpeaker,
       });
     }
 
-    // update postedQuotes state 
-    getPostedQuotes(); 
+    // update postedQuotes state
+    getPostedQuotes();
 
     setIdForUpdate(null);
     const dialog = document.getElementById("dialog");
     dialog.close();
-  }
+  };
 
-  if (loading) {
+  if (!user || loading) {
     return <p>Loading...</p>;
   }
 
   return (
-    <div>
-      <h4>Profile Data</h4>
-      <div>Username:</div>
-      <p>{user && user.displayName}</p>
-      <div>Email:</div>
-      <p>{user && user.email}</p>
-      <button
-        onClick={() => {
-          openUserDialog();
+    <div style={{ marginLeft: "4vw", marginRight: "4vw" }}>
+      <p
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          marginBottom: "1vh",
         }}
       >
-        Update User Info
-      </button>
-      <br />
-      <div>Favorite quote: </div>
-      {userQuote.length > 0 ? <p>{userQuote}</p> : <p>None</p>}
-      <div className="w-1/6 relative bg-slate-300">
-        <img
-          className="w-full h-full object-cover"
-          src={user && user.photoURL}
-          alt="profile image"
-        />
-      </div>
-      <br />
-      <br />
+        Profile Data
+      </p>
       <div>
-        <h4>Update Profile Data</h4>
-        <form onSubmit={handleForm} className="form">
-          <label htmlFor="email">
-            <p>New email: </p>
+        <div style={{ display: "flex" }}>
+          <div style={{ marginRight: "2vw" }}>
+            <img
+              style={{ height: "20vh" }}
+              src={user && user.photoURL}
+              alt="profile image"
+            />
+          </div>
+          <div style={{ marginTop: "2vh" }}>
+            <div style={{ marginRight: "2vw" }}>
+              Username: {user ? user.displayName : ""}
+            </div>
+            <div style={{ marginRight: "2vw" }}>
+              Email: {user ? user.email : ""}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div style={{ marginTop: "6vh" }}>
+        <p style={{ marginBottom: "1vh" }}>Update profile data: </p>
+        <form onSubmit={handleForm} className="form" style={{}}>
+          <label htmlFor="email" style={{ display: "flex" }}>
+            <p style={{ marginRight: "2vw" }}>New email: </p>
             <input
               onChange={(e) => setNewEmail(e.target.value)}
               type="email"
@@ -217,8 +205,8 @@ function ProfilePage() {
               placeholder="example@mail.com"
             />
           </label>
-          <label htmlFor="username">
-            <p>New username:</p>
+          <label htmlFor="username" style={{ display: "flex" }}>
+            <p style={{ marginRight: "2vw" }}>New username:</p>
             <input
               onChange={(e) => setNewUsername(e.target.value)}
               type="text"
@@ -227,18 +215,8 @@ function ProfilePage() {
               placeholder="example55"
             />
           </label>
-          <label htmlFor="new-user-quote">
-            <p>New favorite quote:</p>
-            <input
-              onChange={(e) => setNewUserQuote(e.target.value)}
-              type="text"
-              name="new-user-quote"
-              id="new-user-quote"
-              placeholder="We are the knights who..."
-            />
-          </label>
-          <label htmlFor="new-photo">
-            <p>New profile image:</p>
+          <label htmlFor="new-photo" style={{ display: "flex" }}>
+            <p style={{ marginRight: "2vw" }}>New profile image:</p>
             <input
               onChange={(e) => setNewPhoto(e.target.files[0])}
               type="file"
@@ -249,63 +227,79 @@ function ProfilePage() {
           <button type="submit">Submit</button>
         </form>
 
-        <br />
         {loading && <p>Loading...</p>}
-        <br />
 
-        {postedQuotes &&
-          postedQuotes.map((obj, index) => {
-            return (
-              <div key={index}>
-                <p>quote id: {obj.id}</p>
-                <p>speaker: {obj.speaker}</p>
-                <p>body: {obj.quoteBody}</p>
-                <p>created at: {obj.createdAt["seconds"]}</p>
-                <div>
-                  <button
-                    onClick={() => {
-                      handleUpdateQuote(obj.id);
-                    }}
-                  >
-                    Update
-                  </button>
-                  <button
-                    onClick={() => {
-                      handleDeleteQuote(obj.id);
-                    }}
-                  >
-                    Delete
-                  </button>
+        <div style={{ marginTop: "6vh" }}>
+          {/* {postedQuotes && (
+            <p style={{ marginBottom: "1vh" }}>Your posted quotes:</p>
+          )} */}
+          { postedQuotes &&
+            postedQuotes.map((obj, index) => {
+              return (
+                <div key={index}>
+                  <p>Speaker: {obj.speaker}</p>
+                  <p>Body: {obj.quoteBody}</p>
+                  <p>Created at: {obj.createdAt.toDate().toDateString()}</p>
+                  <div>
+                    <button
+                      onClick={() => {
+                        handleUpdateQuote(obj.id);
+                      }}
+                      style={{ marginRight: "2vw" }}
+                    >
+                      Update
+                    </button>
+                    <button
+                      onClick={() => {
+                        handleDeleteQuote(obj.id);
+                      }}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                  <br />
                 </div>
-                <br />
-              </div>
-            );
-          })}
-
-        {newUsername && <p>new username: {newUsername}</p>}
-        {newEmail && <p>new email: {newEmail}</p>}
-        {newUserQuote && <p>new quote: {newUserQuote}</p>}
-        {newPhoto && <p>new photo url: {JSON.stringify(newPhoto)}</p>}
+              );
+            })}
+        </div>
       </div>
-      
+
       <dialog id="dialog">
-        <p>AAAAGGSFGSFG</p>
         <form onSubmit={handleDialogSubmit} className="form">
-            <label htmlFor="newSpeaker">
-                <p>Update speaker: </p>
-                <input onChange={(e) => setNewSpeaker(e.target.value)} type="text" name="newSpeaker" id="newSpeaker" placeholder="Monty Python" />
-            </label>
-            <label htmlFor="newBody">
-                <p>Update quote: </p>
-                <input onChange={(e) => setNewBody(e.target.value)} type="text" name="newBody" id="newBody" placeholder="We are the knights who say 'Ni'" />
-            </label>
-            <button type="submit">Submit</button>
+          <p style={{ display: "flex", justifyContent: "center" }}>Update quote</p>
+          <label htmlFor="newSpeaker" style={{ display: "flex" }}>
+            <p style={{ marginRight: "2vw" }}>Update speaker: </p>
+            <input
+              onChange={(e) => setNewSpeaker(e.target.value)}
+              type="text"
+              name="newSpeaker"
+              id="newSpeaker"
+              placeholder="Monty Python"
+            />
+          </label>
+          <label htmlFor="newBody" style={{ display: "flex" }}>
+            <p style={{ marginRight: "2vw" }}>Update quote: </p>
+            <input
+              onChange={(e) => setNewBody(e.target.value)}
+              type="text"
+              name="newBody"
+              id="newBody"
+              placeholder="We are the knights who say 'Ni'"
+            />
+          </label>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+          <button type="submit" style={{ marginRight: "2vw" }}>Submit</button>
+          <button
+          onClick={() => {
+            setIdForUpdate(null);
+            const dialog = document.getElementById("dialog");
+            dialog.close();
+          }}
+        >
+          Cancel
+        </button>
+        </div>
         </form>
-        <button onClick={() => {
-          setIdForUpdate(null); 
-          const dialog = document.getElementById("dialog");
-          dialog.close();
-        }}>Cancel</button>
       </dialog>
     </div>
   );
