@@ -59,23 +59,26 @@ function RegisterPage() {
 }
 
   return (
-    <div className="wrapper">
-        <div className="form-wrapper">
-            <h1 className="">Register</h1>
+    // margin: "auto" >> this centers the div vertically and horizontally
+    <div style={{  margin: "auto"  }}>
+        <div style={{ marginBottom: "45vh" }}>
+            <h1 style={{ marginLeft: "6vw", marginBottom: "1vh" }}>Register</h1>
             <form onSubmit={handleForm} className="form">
-                <label htmlFor="email">
-                    <p>Email: </p>
+                <label htmlFor="email" style={{ display: "flex",flexWrap: "wrap" }}>
+                    <p style={{ marginRight: "2vw" }}>Email: </p>
                     <input onChange={(e) => setEmail(e.target.value)} required type="email" name="email" id="email" placeholder="example@mail.com" />
                 </label>
-                <label htmlFor="username">
-                    <p>Username: </p>
+                <label htmlFor="username" style={{ display: "flex",flexWrap: "wrap" }}>
+                    <p style={{ marginRight: "2vw" }}>Username: </p>
                     <input onChange={(e) => setUsername(e.target.value)} required type="text" name="username" id="username" placeholder="Jerry55" />
                 </label>
-                <label htmlFor="password">
-                    <p>Password:</p>
+                <label htmlFor="password" style={{ display: "flex",flexWrap: "wrap" }}>
+                    <p style={{ marginRight: "2vw" }}>Password:</p>
                     <input onChange={(e) => setPassword(e.target.value)} required type="password" name="password" id="password" placeholder="password" />
                 </label>
-                <button type="submit">Submit</button>
+                <div style={{ marginLeft: "6vw", marginTop: "1vh" }}>
+                  <button type="submit">Submit</button>
+                </div>
             </form>
         </div>
     </div>

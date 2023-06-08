@@ -26,7 +26,7 @@ function ProfilePage() {
   const [userQuote, setUserQuote] = useState("");
   const [newUserQuote, setNewUserQuote] = useState("");
   const [newPhoto, setNewPhoto] = useState(null);
-  const [loading, setLoading] = useState(true);
+  const [loading, setLoading] = useState(false);
   const [postedQuotes, setPostedQuotes] = useState([]);
   const [idForUpdate, setIdForUpdate] = useState(null); 
   const [newSpeaker, setNewSpeaker] = useState(null); 
@@ -45,7 +45,6 @@ function ProfilePage() {
       let obj = { ...current.data(), id: current.id };
       postedQuotes.push(obj);
     }
-    // console.log("user's posted quotes: ", postedQuotes);
     setPostedQuotes(postedQuotes);
   };
 
@@ -53,71 +52,79 @@ function ProfilePage() {
     const docRef = doc(db, "users", user.uid);
     const docSnap = await getDoc(docRef);
     if (docSnap.exists()) {
-      // console.log("Document data:", docSnap.data());
       let existingQuote = docSnap.data()["favoriteQuote"];
-      // console.log("existingQuote: ", existingQuote);
       setUserQuote(existingQuote);
     } 
   };
 
-  // HERE: get user's favorite quote from collection, add in state, display
+  // FIX 
   useEffect(() => {
-    if (user == null) {
-      router.push("/login");
-    } else {
-      getUserDoc();
-      getPostedQuotes();
-      setLoading(false);
-    }
+    setLoading(true);
+    getUserDoc();
+    getPostedQuotes();
+    setLoading(false);
   }, []);
+
+  // FOR SOME REASON, THIS DOESN'T WORK 
+  // useEffect(() => {
+  //   setLoading(true);
+  //   if (user == null) {
+  //     router.push("/login");
+  //   } else {
+  //     getUserDoc();
+  //     getPostedQuotes();
+  //   }
+  //   setLoading(false);
+  // }, [user]);
 
   let handleForm = async (e) => {
     e.preventDefault();
-    // console.log("handleForm called");
     setLoading(true);
-    if (newPhoto) {
-      // add new image to storage
-      let imageName = newPhoto.name;
-      let randomizedName = `${imageName + v4()}`;
-      const imageRef = ref(storage, `images/${randomizedName}`);
-      let uploadedData = await uploadBytes(imageRef, newPhoto);
-      // console.log("uploaded image data: ", uploadedData);
-      // add new image's url as user's photoURL
-      let newPhotoURL = await getDownloadURL(
-        ref(storage, uploadedData.ref._location.path_)
-      );
-      // console.log("new photoURL: ", newPhotoURL);
-      // update user in auth
-      const res = await updateProfile(auth.currentUser, {
-        photoURL: newPhotoURL,
-      });
-    }
-
-    if (newEmail) {
-      // console.log("email is new");
-      const res = await updateProfile(auth.currentUser, {
-        email: newEmail,
-      });
-    }
-
-    if (newUsername) {
-      // console.log("username is new");
-      const res = await updateProfile(auth.currentUser, {
-        displayName: newUsername,
-      });
-    }
-
-    if (newUserQuote) {
-      // console.log("quote is new");
-      const userObjRef = doc(db, "users", user.uid);
-      // console.log("userObjRef: ", userObjRef);
-      const res = await updateDoc(userObjRef, {
-        favoriteQuote: newUserQuote,
-      });
-      // console.log("res from update quote: ", res);
-      if (!res) {
-        setUserQuote(newUserQuote);
+    try {
+      if (newPhoto) {
+        // add new image to storage
+        let imageName = newPhoto.name;
+        let randomizedName = `${v4() + imageName}`;
+        const imageRef = ref(storage, `images/${randomizedName}`);
+        let uploadedData = await uploadBytes(imageRef, newPhoto);
+        // add new image's url as user's photoURL
+        let newPhotoURL = await getDownloadURL(
+          ref(storage, uploadedData.ref._location.path_)
+        );
+        // update user in auth
+        const res = await updateProfile(auth.currentUser, {
+          photoURL: newPhotoURL,
+        });
+  
+        const userObjRef = doc(db, "users", user.uid);
+        const res2 = await updateDoc(userObjRef, {
+          photoURL: newPhotoURL
+        })
       }
+  
+      if (newEmail) {
+        const res = await updateProfile(auth.currentUser, {
+          email: newEmail,
+        });
+      }
+  
+      if (newUsername) {
+        const res = await updateProfile(auth.currentUser, {
+          displayName: newUsername,
+        });
+      }
+  
+      if (newUserQuote) {
+        const userObjRef = doc(db, "users", user.uid);
+        const res = await updateDoc(userObjRef, {
+          favoriteQuote: newUserQuote,
+        });
+        if (!res) {
+          setUserQuote(newUserQuote);
+        }
+      }
+    } catch (err){
+      console.log(err); 
     }
     setLoading(false);
   };
@@ -126,7 +133,6 @@ function ProfilePage() {
   let handleDeleteQuote = async (id) => {
     try {
       let deleted = await deleteDoc(doc(db, "quotes", id));
-      // console.log("quote deleted"); 
       getPostedQuotes(); 
     } catch (err){
       console.log("error from delete: ", err); 
@@ -137,22 +143,14 @@ function ProfilePage() {
   let handleUpdateQuote = (id) => {
     const dialog = document.getElementById("dialog");
     dialog.showModal();
-    // console.log("handleUpdateQuote called"); 
-    // console.log("id passed to update: ", id); 
     setIdForUpdate(id); 
   }
 
   let handleDialogSubmit = async (e) => {
     e.preventDefault(); 
-    // console.log("handleDialogSubmit called"); 
-    // console.log("newBody: ", newBody);
-    // console.log("newSpeaker: ", newSpeaker); 
-    // console.log("id from dialog: ", idForUpdate); 
-
     // update current item in db
     const quoteRef = doc(db, "quotes", idForUpdate);
-    // console.log("quoteRef from update: ", quoteRef); 
-
+ 
     if (newBody && newSpeaker){
       await updateDoc(quoteRef, {
         quoteBody: newBody,
@@ -236,7 +234,7 @@ function ProfilePage() {
               type="text"
               name="new-user-quote"
               id="new-user-quote"
-              placeholder="We are the knights who say 'Ni'"
+              placeholder="We are the knights who..."
             />
           </label>
           <label htmlFor="new-photo">
@@ -304,7 +302,6 @@ function ProfilePage() {
             <button type="submit">Submit</button>
         </form>
         <button onClick={() => {
-          // console.log("id from dialog: ", idForUpdate); 
           setIdForUpdate(null); 
           const dialog = document.getElementById("dialog");
           dialog.close();

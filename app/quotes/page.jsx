@@ -11,16 +11,13 @@ function QuotesPage() {
   const router = useRouter();
 
   let getAllQuotes = async () => {
-    // console.log("getAllQuotes called"); 
     let quotesList = [];
     try {
       const docRef = collection(db, 'quotes');    
       let quotesSnapshot = await getDocs(query(docRef, orderBy("createdAt", "desc")));
-      // console.log("quotes snapshot: ", quotesSnapshot);
       for (let i = 0; i < quotesSnapshot.docs.length; i++){
         let currentDoc = quotesSnapshot.docs[i]; 
-        let newObj = { ...currentDoc.data(), id: currentDoc.id };
-        // console.log("new obj: ", newObj); 
+        let newObj = { ...currentDoc.data(), id: currentDoc.id }; 
         quotesList.push(newObj); 
       }       
 
@@ -30,7 +27,6 @@ function QuotesPage() {
         let current = quotesList[i]; 
         let currentUser = current.userId;
         let userId = currentUser.split("/")[2]; 
-        // console.log("userId: ", userId); 
 
         // get user info for each quotesList obj
         const docRef = collection(db, 'users');    
@@ -43,7 +39,6 @@ function QuotesPage() {
       }
 
       setQuotes(quotesList);  
-      // console.log("new quotes list: ", quotesList);
     } catch (err) {
       console.log("error: ", err); 
     }
@@ -51,12 +46,9 @@ function QuotesPage() {
 
   useEffect(() => {
     //Runs only on the first render
-    if (user == null) {
-      router.push("/login");
-    } else {
-      getAllQuotes(); 
-      setLoading(false); 
-    }
+    setLoading(true); 
+    getAllQuotes(); 
+    setLoading(false); 
   }, []);
 
   const [loading, setLoading] = useState(true); 
@@ -65,22 +57,18 @@ function QuotesPage() {
   const [quotes, setQuotes] = useState([]); 
 
   let handleFormSubmit = async (e) => {
-    e.preventDefault(); 
-      // console.log("create quote called"); 
-      // console.log("speaker: ", speaker); 
-      // console.log("quoteBody: ", quoteBody); 
-      // console.log("user uid: ", user.uid); 
-    
-      // user collection object: user (ref users collection), speaker, quoteBody, createAt
-      // Add a new document with a generated id.
-      const docRef = await addDoc(collection(db, "quotes"), {
-        speaker: speaker,
-        quoteBody: quoteBody,
-        userId: "/users/" + user.uid,
-        createdAt: serverTimestamp()
-      });     
-      const newQuotes = await getAllQuotes(); 
-    } 
+    e.preventDefault();     
+    // user collection object: user (ref users collection), speaker, quoteBody, createAt
+    // Add a new document with a generated id.
+    console.log("handleForm called"); 
+    const docRef = await addDoc(collection(db, "quotes"), {
+      speaker: speaker,
+      quoteBody: quoteBody,
+      userId: "/users/" + user.uid,
+      createdAt: serverTimestamp()
+    });     
+    const newQuotes = await getAllQuotes(); 
+  } 
 
   if (loading){
     return <p>Loading...</p>
@@ -97,7 +85,7 @@ function QuotesPage() {
             </label>
             <label htmlFor="quoteBody">
                 <p>Quote: </p>
-                <input onChange={(e) => setQuoteBody(e.target.value)} type="text" name="quoteBody" id="quoteBody" placeholder="We are the knights who say 'Ni'" />
+                <input onChange={(e) => setQuoteBody(e.target.value)} type="text" name="quoteBody" id="quoteBody" placeholder="We are the knights who..." />
             </label>
             <button type="submit">Submit</button>
         </form>

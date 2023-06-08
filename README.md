@@ -29,6 +29,7 @@
 - display user's quotes on profile DONE 
 - delete user's quotes on profile DONE 
 - update user's quotes on profile DONE 
+- fix reroutes on quotes, profile 
 - fix profile image on quotes page 
 
 ## problem/solution example
@@ -45,9 +46,16 @@
 ## problem/solution example
 - getDocs returns a snapshot with a .docs property 
 - I can iterate over this .docs array and call .docs[i].data() to see the object 
-- however, this object does not include an id
+- problem: however, this object does not include an id
 - solution: { ...currentDoc.data(), id: currentDoc.id };
 
+
+## problem/solution example 
+- problem: protected routes redirect to login before accessing user context 
+
+
+## amazon css color scheme 
+- #ff9900, #146eb4, #000000, #232f3e, #f2f2f2
 
 ## citations 
 1. Smoljames, "Learn Next.js by building a full-stack CRUD app | Nextjs + Firebase (Auth & Firestore) + TailwindCSS" [link](https://www.youtube.com/watch?v=UzMr7-0FgA0)
@@ -59,3 +67,4 @@
 7. Lama Dev, "React Firebase Tutorial | AUTH - CRUD - Image Upload" [link](https://www.youtube.com/watch?v=D9W7AFeJ3kk)
 8. PedroTech, "Upload Images / Files to Firebase In React - Firebase V9 File Upload Tutorial" [link](https://www.youtube.com/watch?v=YOAeBSCkArA)
 9. Stack Overflow, "Is there a way to use the orderBy() function from firestore using getDocs?" [link](https://stackoverflow.com/questions/70553624/is-there-a-way-to-use-the-orderby-function-from-firestore-using-getdocs)
+10. Color-hex, "Amazon-website Color Palette" [link](https://www.color-hex.com/color-palette/26593)

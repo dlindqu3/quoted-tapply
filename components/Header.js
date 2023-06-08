@@ -11,41 +11,25 @@ function Header() {
   const router = useRouter(); 
 
   let handleLogout = async () => {
-    // console.log("handleLogout called"); 
     signOut(auth).then(() => {
-      // console.log("signed out"); 
-      router.push('/login');
+    router.push('/');
     }).catch((error) => {
       console.log("error signing out: ", error); 
     });
   }
 
-  let handleRegister = () => {
-    router.push('/register');
-  }
-
-  let handleLogin = () => {
-    router.push('/login');
-  }
-
-  let handleProfile = () => {
-    router.push('/profile');
-  }
-
-  let handleQuotes = () => {
-    router.push('/quotes');
-  }
-
   return (
-    <div>
-    <div>Header here</div>
-    { !user && <button onClick={handleRegister}>Register</button> }
-    { !user && <button onClick={handleLogin}>Login</button> }
-    { user && <p>{user.displayName}</p> } 
-    { user && <button onClick={handleProfile}>Profile</button> }
-    { user && <button onClick={handleQuotes}>Quotes</button> }
-    { user && <button onClick={handleLogout}>Logout</button> }
-    </div>
+    <nav style={{ display: 'flex', flexWrap: 'wrap', justifyContent: "space-between", paddingLeft: "4vw", paddingRight: "4vw", minHeight: "6vh", backgroundColor: "#232f3e" }}>
+      <a href="/" style={{ display: "inline-block", marginTop: "1vh", color: "white" }}>Quoted</a>
+      <div style={{ display: 'flex', flexWrap: 'wrap' }}>
+        { !user && <a href="/register" style={{ display: "inline-block", marginRight: "4vw",  textAlign: "center", marginTop: "1vh", color: "white" }}>Register</a> }
+        { !user && <a href="/login" style={{ display: "inline-block", marginRight: "4vw",  textAlign: "center", marginTop: "1vh", color: "white" }}>Login</a> }
+        { user && <a href="/profile" style={{ display: "inline-block", marginRight: "4vw",  textAlign: "center", marginTop: "1vh", color: "white" }}>Profile</a> }
+        { user && <a href="/quotes" style={{ display: "inline-block", marginRight: "4vw",  textAlign: "center", marginTop: "1vh", color: "white" }}>Quotes</a> }
+        { user && <p style={{ display: "inline-block", marginRight: "4vw", marginTop: "1vh", color: "white" }}>User: {user.displayName}</p> } 
+        { user && <div><button onClick={handleLogout} style={{ display: "inline-block",  textAlign: "center", marginTop: "1vh", color: "white" }}>Logout</button></div> }
+      </div>
+    </nav>
 
   )
 }

@@ -21,7 +21,7 @@ export default function RootLayout({ children }) {
       <body>
         <UserContextProvider>
           <Header />
-          <div className="flex flex-col min-h-screen relative bg-red-500">
+          <div className="flex flex-col min-h-screen relative">
             {children}
           </div>
           <Footer />
