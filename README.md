@@ -74,3 +74,4 @@
 8. PedroTech, "Upload Images / Files to Firebase In React - Firebase V9 File Upload Tutorial" [link](https://www.youtube.com/watch?v=YOAeBSCkArA)
 9. Stack Overflow, "Is there a way to use the orderBy() function from firestore using getDocs?" [link](https://stackoverflow.com/questions/70553624/is-there-a-way-to-use-the-orderby-function-from-firestore-using-getdocs)
 10. Color-hex, "Amazon-website Color Palette" [link](https://www.color-hex.com/color-palette/26593)
+11. Stack Overflow, "Vercel Deployment Error: Command "npm run build" exited with 1" [link](https://stackoverflow.com/questions/66840942/vercel-deployment-error-command-npm-run-build-exited-with-1)
