@@ -29,8 +29,10 @@
 - display user's quotes on profile DONE 
 - delete user's quotes on profile DONE 
 - update user's quotes on profile DONE 
+- fix profile image on quotes page DONE 
 - fix reroutes on quotes, profile 
-- fix profile image on quotes page 
+- add CSS 
+
 
 ## problem/solution example
 - updating collection documents
